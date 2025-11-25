@@ -31,8 +31,7 @@ public class GeneradorSudoku {
         for (int fila = 0; fila < TAMANO; fila++) {
             for (int columna = 0; columna < TAMANO; columna++) {
                 if (!colocarNumeroAleatorio(fila, columna)) {
-                    System.out.println("No se pudo generar un número válido para la posición (" + 
-                                     fila + "," + columna + ")");
+                    System.out.println("No se pudo generar un número válido para la posición (" + fila + "," + columna + ")");
                 }
             }
         }
