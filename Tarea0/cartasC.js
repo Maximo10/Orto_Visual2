@@ -1,8 +1,9 @@
 "use strict";
 const fs = require("fs");
+require('dotenv').config();
 const mysql = require("mysql2/promise");
 const readline = require("readline");
-const { MongoClient, ObjectId } = require("mongodb"); // MongoDB con ObjectId
+const { MongoClient, ObjectId } = require("mongodb"); 
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -23,6 +24,7 @@ let tipo_archivo = "";
 let nombre_archivo = "";
 
 // MongoDB
+const mongoPassword = process.env.MONGO_PASSWORD;
 const mongoUri = "mongodb+srv://bferfer:QZ1zBVzYrZilu6d4@cluster0.tgbjhs7.mongodb.net/Ficha_RH?retryWrites=true&w=majority";
 const mongoClient = new MongoClient(mongoUri);
 let mongoDB, mongoCollection;
@@ -67,7 +69,7 @@ async function leerdatos() {
             break;
         case "4":
             tipo_archivo = "mongo";
-            await conectarMongo(); // Conectamos a MongoDB
+            await conectarMongo();
             break;
         case "5":
             console.log("Saliendo del programa...");
@@ -184,7 +186,7 @@ async function guardarEnMongo() {
 async function insertarEnMongo(ficha) {
     try {
         const result = await mongoCollection.insertOne(ficha);
-        ficha._id = result.insertedId; // Guardamos el _id en el objeto local
+        ficha._id = result.insertedId; // Asignamos el ID generado por MongoDB
         lista_cartas.push(ficha);      // Añadimos la ficha solo localmente
     } catch (err) {
         console.error("Error al insertar en MongoDB:", err);
@@ -194,8 +196,7 @@ async function insertarEnMongo(ficha) {
 async function actualizarEnMongo(id, campo, valor) {
     try {
         await mongoCollection.updateOne({ _id: new ObjectId(id) }, { $set: { [campo]: valor } });
-        // Actualizamos solo localmente
-        const index = lista_cartas.findIndex((c) => c._id.toString() === id.toString());
+        const index = lista_cartas.findIndex((car) => car._id.toString() === id.toString());
         if (index !== -1) lista_cartas[index][campo] = valor;
     } catch (err) {
         console.error("Error al actualizar en MongoDB:", err);
@@ -204,9 +205,8 @@ async function actualizarEnMongo(id, campo, valor) {
 
 async function borrarEnMongo(id) {
     try {
-        await mongoCollection.deleteOne({ _id: new ObjectId(id) });
-        // Eliminamos solo del array local
-        const index = lista_cartas.findIndex((c) => c._id.toString() === id.toString());
+        await mongoCollection.deleteOne({ _id: new ObjectId(id) }); // Eliminamos solo del array local
+        const index = lista_cartas.findIndex((car) => car._id.toString() === id.toString());
         if (index !== -1) lista_cartas.splice(index, 1);
     } catch (err) {
         console.error("Error al borrar en MongoDB:", err);

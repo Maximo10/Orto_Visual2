@@ -68,5 +68,12 @@
     "edad": 25,
     "departamento": "IT",
     "posicion": "Desarrollador de software"
+  },
+  {
+    "nombre": "Nahrib",
+    "apellidos": "Ferna",
+    "edad": 45,
+    "departamento": "Recursos Humanos",
+    "posicion": "Coordinador"
   }
 ]
